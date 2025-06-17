@@ -1,0 +1,39 @@
+---
+description: TypeScript Best Practices
+globs: **/*.ts|**/*.tsx|**/*.vue"**/tests/**/*|**/cypress/**/*|**/vitest.config.ts
+alwaysApply: false
+---
+## Type Definitions
+- Use interfaces for object shapes that can be extended
+- Use type aliases for unions, intersections, and utility types
+- Define proper return types for functions
+- Use generics for reusable components and functions
+- Avoid using `any` type, prefer `unknown` when type is uncertain
+
+## Type Safety
+- Enable strict mode in tsconfig.json
+- Use type guards for runtime type checking
+- Implement proper null and undefined checks
+- Use discriminated unions for complex type relationships
+- Leverage TypeScript's utility types (Partial, Pick, Omit, etc.)
+
+## Code Organization
+- Group related types in separate files
+- Use namespaces to avoid naming collisions
+- Export types from a central location
+- Use barrel files for exporting multiple types
+- Keep type definitions close to their implementation
+
+## Best Practices
+- Use readonly for immutable properties
+- Implement proper error handling with typed errors
+- Use enums sparingly, prefer union types or const objects
+- Document complex types with JSDoc comments
+- Use type inference when types are obvious
+
+## Performance
+- Avoid excessive type complexity that can slow down the compiler
+- Use type assertions sparingly and only when necessary
+- Optimize imports to reduce bundle size
+- Use proper module resolution strategies
+- Implement code splitting for large applications 

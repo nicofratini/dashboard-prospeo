@@ -1,0 +1,74 @@
+---
+description: UI, Shadcn Vue, and Tailwind Best Practices
+globs: **/*.vue|**/components/**/*.vue|**/components/**/*.ts|**/layouts/**/*.vue|**/pages/**/*.vue|tailwind.config.ts
+alwaysApply: false
+---
+## Component Structure
+- Use Shadcn Vue components as the foundation for UI
+- Extend Shadcn components rather than modifying them directly
+- Create component variants using the `cn` utility
+- Organize components by feature or functionality
+- Use component composition for complex UIs
+
+## Tailwind Usage
+- Use Tailwind's utility classes for styling
+- Follow the mobile-first responsive design approach
+- Use the `@apply` directive sparingly and only in component styles
+- Use custom theme extensions in `tailwind.config.ts`
+- Use Tailwind's color palette for consistent theming
+
+## Responsive Design
+- Use Tailwind's responsive prefixes (`sm:`, `md:`, `lg:`, `xl:`, `2xl:`)
+- Test designs across multiple device sizes
+- Use flex and grid layouts for responsive components
+- Implement proper breakpoints for different device sizes
+- Use `container` class with appropriate constraints
+
+## Accessibility
+- Ensure proper color contrast ratios
+- Use semantic HTML elements
+- Implement proper ARIA attributes
+- Ensure keyboard navigation works correctly
+- Test with screen readers
+
+## Dark Mode
+- Use Tailwind's dark mode variant
+- Implement proper color schemes for both light and dark modes
+- Use CSS variables for theme colors
+- Test both modes for proper contrast
+- Use the `useColorMode` composable for theme switching
+
+## Performance
+- Use `purgeCSS` to remove unused styles
+- Implement proper code splitting for components
+- Use the `@layer` directive to organize styles
+- Minimize the use of custom CSS
+- Use Tailwind's JIT mode for faster development
+
+## Icons
+- Use the `Icon` component from Iconify
+- Prefer `mdi` and `line-md` icon sets
+- Use appropriate icon sizes based on context
+- Ensure icons have proper accessibility attributes
+- Use consistent icon styles throughout the application
+
+## Forms
+- Use Shadcn Vue form components
+- Implement proper form validation
+- Use `zod` for schema validation
+- Provide clear error messages
+- Implement proper form submission handling
+
+## Animation
+- Use Tailwind's animation utilities
+- Implement smooth transitions between states
+- Use the `motion` directives for complex animations
+- Respect user preferences for reduced motion
+- Keep animations subtle and purposeful
+
+## Best Practices
+- Keep component templates clean and readable
+- Use proper naming conventions for components and styles
+- Document component APIs with JSDoc comments
+- Create reusable UI patterns
+- Implement proper loading and error states 

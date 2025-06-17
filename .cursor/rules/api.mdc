@@ -1,0 +1,67 @@
+---
+description: Nuxt API Best Practices
+globs: "**/server/**/*.ts"
+alwaysApply: false
+---
+## API Design
+- **Adhere to RESTful Principles**: Design APIs following RESTful principles to ensure statelessness, resource-based URLs, and proper use of HTTP methods.
+- **Utilize Appropriate HTTP Methods**: Use HTTP methods correctly: `GET` for retrieving data, `POST` for creating, `PUT` for updating, and `DELETE` for removing resources.
+- **Implement Standard HTTP Status Codes**: Return appropriate HTTP status codes to indicate the result of API requests (e.g., 200 for success, 404 for not found, 500 for server errors).
+- **Maintain Consistent URL Patterns**: Ensure URL patterns are consistent and intuitive, using nouns to represent resources (e.g., `/api/users` for user-related operations).
+- **Version APIs**: Version your APIs (e.g., `/api/v1/`) to manage changes and maintain backward compatibility.
+
+## Nuxt API Routes
+- **Organize API Routes**: Place API route handlers in the `server/api` directory to leverage Nuxt's file-based routing for APIs.
+- **Implement Robust Error Handling**: Use try/catch blocks and return informative error messages to handle exceptions gracefully.
+- **Apply Middleware for Security**: Use middleware for tasks such as authentication, authorization, and input validation to protect API endpoints.
+- **Validate Request Data**: Utilize libraries like Zod or Joi to validate and sanitize incoming request data, ensuring data integrity.
+- **Ensure Consistent Response Formats**: Standardize API responses with a consistent structure, including status codes, messages, and data payloads.
+- **Leverage Event Handlers**: Use Nuxt's event handlers like `onRequest`, `onBeforeResponse` for cross-cutting concerns across multiple routes.
+- **Structure Route Hierarchy Logically**: Organize API routes in a logical hierarchy reflecting your application's domain model.
+
+## Security
+- **Enforce Authentication and Authorization**: Implement robust authentication mechanisms (e.g., JWT, OAuth) and enforce authorization checks to protect resources.
+- **Use HTTPS**: Ensure all API communications occur over HTTPS to protect data in transit.
+- **Validate and Sanitize Inputs**: Thoroughly validate and sanitize all input data to prevent injection attacks and ensure data integrity.
+- **Implement Rate Limiting**: Apply rate limiting to prevent abuse and protect against denial-of-service attacks.
+- **Configure CORS Properly**: Set up Cross-Origin Resource Sharing (CORS) policies to control which domains can access your APIs.
+
+## Performance
+- **Implement Caching Strategies**: Use caching mechanisms (e.g., HTTP caching, in-memory caches) to reduce load times and server strain.
+- **Use Pagination for Large Datasets**: Implement pagination to handle large datasets efficiently and improve response times.
+- **Optimize Database Queries**: Write efficient database queries and use indexing to enhance data retrieval performance.
+- **Compress Responses**: Enable response compression (e.g., Gzip) to reduce payload sizes and improve transfer speeds.
+
+## Error Handling
+- **Return Appropriate Status Codes**: Ensure APIs return correct HTTP status codes to reflect the outcome of requests.
+- **Provide Meaningful Error Messages**: Deliver clear and informative error messages to help clients understand issues.
+- **Log Errors for Debugging**: Implement logging mechanisms to record errors, facilitating debugging and monitoring.
+- **Use Consistent Error Formats**: Standardize error response structures for consistency and predictability.
+
+## Testing
+- **Write Unit Tests for API Routes**: Develop unit tests to verify the functionality of individual API endpoints.
+- **Implement Integration Tests**: Create integration tests to assess the interaction between multiple components and systems.
+- **Mock External Dependencies**: Use mocking techniques to simulate external services during testing, ensuring tests are reliable and independent.
+- **Test Error Scenarios**: Design tests to cover potential error cases, ensuring APIs handle failures gracefully.
+- **Ensure Comprehensive Test Coverage**: Aim for high test coverage to confidently validate the correctness of your APIs.
+
+## Documentation
+- **Document APIs with OpenAPI/Swagger**: Use tools like OpenAPI or Swagger to create interactive and up-to-date API documentation.
+- **Provide Request and Response Examples**: Include examples of requests and responses to guide API consumers.
+- **Document Authentication Requirements**: Clearly outline authentication and authorization requirements for each endpoint.
+- **Maintain Up-to-Date Documentation**: Regularly update documentation to reflect changes and ensure accuracy.
+- **Use JSDoc for Internal Documentation**: Apply JSDoc comments within codebases to document functions, classes, and modules for internal understanding.
+
+## Monitoring
+- **Implement Logging**: Set up logging to track API usage patterns and identify potential issues.
+- **Use Monitoring Tools**: Integrate monitoring solutions to observe API performance metrics and detect anomalies.
+- **Track Error Rates**: Monitor error rates to identify and address recurring issues promptly.
+- **Set Up Alerting**: Configure alerts to notify teams of critical issues or performance degradations.
+- **Analyze API Usage**: Collect and analyze usage data to understand client interactions and optimize API performance.
+
+## Best Practices
+- **Ensure Single Responsibility for API Routes**: Design API routes to handle a single responsibility, promoting clarity and maintainability.
+- **Use Dependency Injection**: Apply dependency injection to enhance testability and decouple components.
+- **Enforce Data Validation**: Consistently validate data to maintain integrity and prevent errors.
+- **Utilize TypeScript for Type Safety**: Employ TypeScript to catch type-related errors during development and enhance code quality.
+- **Follow Principle of Least Privilege**: Grant minimal necessary permissions to users and services to enhance security.

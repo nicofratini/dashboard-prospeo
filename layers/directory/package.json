@@ -1,0 +1,29 @@
+{
+  "name": "directory-layer",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "dev": "nuxi dev .playground",
+    "dev:prepare": "nuxt prepare .playground",
+    "build": "nuxt build .playground",
+    "generate": "nuxt generate .playground",
+    "preview": "nuxt preview .playground",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "latest",
+    "@nuxt/image": "^1.10.0",
+    "@types/dompurify": "^3.2.0",
+    "eslint": "^9.22.0",
+    "nuxt": "^3.16.0",
+    "typescript": "^5.8.2",
+    "vue": "latest"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^1.2.6",
+    "ai": "^4.1.63",
+    "cheerio": "^1.0.0",
+    "sanitize-html": "^2.15.0"
+  }
+}

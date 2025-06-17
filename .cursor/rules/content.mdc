@@ -1,0 +1,53 @@
+---
+description: Nuxt Content Best Practices
+globs:    **/content/**/*.@(md|yaml|json)|**/content.config.ts|**/pages/**/[...slug].vue
+alwaysApply: false
+---
+## Content Structure
+- Organize content by type and category
+- Use consistent naming conventions for content files
+- Use front matter for metadata
+- Use YAML for structured data
+- Use markdown for long-form content
+
+## Markdown Usage
+- Use proper heading hierarchy (h1, h2, h3, etc.)
+- Use lists for grouped information
+- Use code blocks with language specification
+- Use tables for structured data
+- Use images with proper alt text
+
+## Front Matter
+- Include title, description, and date in front matter
+- Use tags and categories for content organization
+- Include SEO metadata in front matter
+- Use custom fields for specific content types
+- Keep front matter consistent across similar content
+
+## Content Querying
+- Use `queryContent()` for content retrieval
+- Implement proper filtering and sorting
+- Use pagination for large content collections
+- Cache content queries when appropriate
+- Implement proper error handling for content queries
+
+## Content Rendering
+- Use the `<ContentDoc>` component for single documents
+- Use the `<ContentList>` component for content collections
+- Use the `<ContentRenderer>` component for custom rendering
+- Implement proper loading and error states
+- Use content transformers for custom content processing
+
+## SEO
+- Include proper meta tags for content pages
+- Implement proper canonical URLs
+- Use structured data for rich snippets
+- Implement proper Open Graph tags
+- Use proper heading structure for SEO
+
+## Performance
+- Optimize images in content
+- Use lazy loading for content components
+- Implement proper caching strategies
+- Use static generation for content pages
+- Optimize content queries for performance

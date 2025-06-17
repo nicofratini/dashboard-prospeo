@@ -1,0 +1,4 @@
+title: 'Getting started'
+icon: 'line-md:home-simple'
+description: 'Build a SaaS application with Nuxtbe'
+redirect: /docs/getting-started/introduction

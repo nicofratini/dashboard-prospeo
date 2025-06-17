@@ -1,0 +1,21 @@
+{
+  "name": "content-layer",
+  "private": true,
+  "type": "module",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "build": "nuxt build .playground",
+    "dev": "nuxt dev .playground",
+    "generate": "nuxt generate .playground",
+    "preview": "nuxt preview .playground",
+    "postinstall": "nuxt prepare .playground",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@nuxt/content": "^3.1.1",
+    "@nuxt/eslint": "latest",
+    "nuxt": "^3.15.4",
+    "typescript": "^5.7.3",
+    "vue": "latest"
+  }
+}

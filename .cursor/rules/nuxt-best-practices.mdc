@@ -1,0 +1,61 @@
+---
+description: Nuxt 3 Best Practices
+globs: **/*.vue|composables/**/*.ts|pages/**/*.vue|layouts/**/*.vue|middleware/**/*.ts|plugins/**/*.ts|app/**/*|nuxt.config.ts
+alwaysApply: false
+---
+## Project Structure
+- **Utilize Nuxt 3's Layers Architecture**: Adopt Nuxt 3's layers architecture to promote modular code organization, facilitating better scalability and maintainability.
+- **Delegate Complex Logic to Composables**: Keep page components lightweight by moving complex logic into composables, ensuring cleaner and more readable code.
+- **Organize Server Routes**: Use the `server/api` directory to define server routes, maintaining a clear separation between client and server logic.
+- **Centralize Middleware**: Place middleware functions in the `middleware` directory to streamline request handling and enhance code organization.
+- **Define Types with Proper Namespacing**: Store TypeScript types in the `types` directory, ensuring appropriate namespacing for clarity and consistency.
+- **Do not use imports if they're not needed**: leverage the Nuxt auto-import functionality. Do not reimport compoonents if they'll be autoimported
+
+## Composables
+- **Develop Reusable Composables**: Create composables for shared logic to promote code reuse and consistency across the application.
+- **Adopt 'use' Prefix Naming Convention**: Name composables with the `use` prefix (e.g., `useAuth`, `useCart`) to clearly indicate their purpose and enhance discoverability.
+- **Return Reactive References**: Ensure composables return reactive references (`ref` or `reactive`) to maintain reactivity in consuming components.
+- **Maintain Single Responsibility**: Design composables with a single responsibility to enhance testability and maintainability.
+- **Document with JSDoc Comments**: Use JSDoc comments to document composables, providing clear usage instructions and improving developer experience.
+
+## Components
+- **Leverage `<script setup>` Syntax**: Utilize the Composition API with the `<script setup>` syntax for a more concise and efficient component definition.
+- **Implement Props Validation**: Use TypeScript interfaces to validate component props, ensuring type safety and reducing runtime errors.
+- **Use `v-model` for Two-Way Binding**: Employ the `v-model` directive for parent-child component communication, simplifying data flow and synchronization.
+- **Utilize Auto-Imports**: Take advantage of Nuxt's auto-import feature for commonly used functions and components to reduce boilerplate code.
+- **Structure Component Directories**: Organize components within directories, using `index.vue` for main components to maintain a clean and intuitive file structure.
+- **Access Template Refs Appropriately**: Use the `ref` function to access template references within the Composition API, ensuring proper reactivity.
+
+## Performance
+- **Optimize Data Fetching**: Use `useAsyncData` and `useFetch` composables for efficient data fetching, leveraging Nuxt's built-in features for SSR and caching.
+- **Handle Errors Gracefully**: Implement proper error handling using try/catch blocks to manage exceptions during asynchronous operations.
+- **Implement Suspense for Loading States**: Use the `<Suspense>` component to manage loading states, providing a better user experience during data fetching.
+- **Enable Code Splitting**: Implement code splitting with dynamic imports to reduce initial bundle sizes and improve load times.
+- **Use `<ClientOnly>` for Client-Side Components**: Wrap client-side only components with the `<ClientOnly>` component to prevent SSR issues and optimize performance.
+
+## State Management
+- **Adopt Pinia for Global State**: Use Pinia as the state management library for global state, benefiting from its modular design and TypeScript support.
+- **Design Modular Stores**: Create modular stores with clear responsibilities to maintain a scalable and organized state management system.
+- **Define Stores with Setup Syntax**: Use the `defineStore` function with the setup syntax to create stores, aligning with the Composition API's principles.
+- **Enforce Type Safety in Stores**: Implement TypeScript interfaces for store state to ensure type safety and improve code reliability.
+- **Utilize Getters for Derived State**: Use getters to compute derived state, keeping the store state minimal and focused.
+
+## Routing
+- **Leverage File-Based Routing**: Utilize Nuxt's file-based routing system for intuitive and convention-based route definitions.
+- **Implement Nested Routes**: Use nested routes to represent complex UI structures, ensuring a clear and maintainable routing hierarchy.
+- **Apply Route Middleware**: Use route middleware for tasks like authentication and authorization, enhancing security and user experience.
+- **Configure Navigation Guards**: Implement navigation guards to control access to routes based on specific conditions, improving application flow.
+- **Use Route Meta Information**: Utilize route meta fields to store additional information, such as access permissions or layout preferences.
+
+## SEO
+- **Manage Meta Tags with `useHead`**: Use the `useHead` composable to define dynamic meta tags, improving SEO and social media integration.
+- **Implement Open Graph Tags**: Add appropriate Open Graph tags to enhance link previews on social media platforms.
+- **Define Canonical URLs**: Set proper canonical URLs to avoid duplicate content issues and improve search engine ranking.
+- **Incorporate Structured Data**: Use structured data (e.g., JSON-LD) to provide search engines with explicit information about your content, enabling rich snippets.
+
+## Error Handling
+- **Create Custom Error Pages**: Develop user-friendly custom error pages to handle different HTTP error statuses gracefully.
+- **Implement Error Boundaries**: Use error boundaries to catch and handle errors in specific parts of the application, preventing crashes.
+- **Log Errors to Monitoring Services**: Integrate with monitoring services to log and track errors, facilitating proactive maintenance and debugging.
+
+- **Provide User-Friendly Error Messages**: Display clear and helpful 

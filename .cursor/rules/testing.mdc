@@ -1,0 +1,53 @@
+---
+description: Testing Best Practices
+globs: **/*.spec.ts|**/*.test.ts|**/tests/**/*|**/cypress/**/*|**/vitest.config.ts
+alwaysApply: false
+---
+## Unit Testing
+- Write tests for individual functions and components
+- Use descriptive test names that explain the expected behavior
+- Follow the Arrange-Act-Assert pattern
+- Mock external dependencies
+- Test edge cases and error scenarios
+
+## Component Testing
+- Test component rendering and behavior
+- Use Vue Test Utils for component testing
+- Test component props and events
+- Test component slots and custom directives
+- Test component lifecycle hooks
+
+## Integration Testing
+- Test interactions between multiple components
+- Test API integrations
+- Test form submissions and validations
+- Test routing and navigation
+- Test state management
+
+## E2E Testing
+- Use Cypress or Playwright for E2E testing
+- Test critical user flows
+- Test responsive behavior
+- Test accessibility
+- Test performance
+
+## Test Organization
+- Group related tests together
+- Use describe blocks to organize tests
+- Use beforeEach and afterEach for setup and teardown
+- Use test fixtures for common test data
+- Use test helpers for common test operations
+
+## Best Practices
+- Write tests before or alongside code (TDD/BDD)
+- Keep tests simple and focused
+- Avoid testing implementation details
+- Use snapshots sparingly
+- Maintain test independence
+
+## Performance
+- Use test runners with watch mode for fast feedback
+- Implement proper test isolation
+- Use test parallelization for faster test runs
+- Optimize test setup and teardown
+- Use test filtering for focused testing 

@@ -1,0 +1,60 @@
+---
+description: Supabase Integration Best Practices
+globs: **/supabase/**/*|**/composables/use*Supabase*.ts|**/server/api/**/*|**/types/supabase.ts|**/plugins/supabase.ts|**/utils/supabase*.ts
+alwaysApply: false
+---
+## Authentication
+- Use Supabase Auth for user authentication
+- Implement proper session management with `useSupabaseUser` and `useSupabaseClient`
+- Use Row Level Security (RLS) policies for data access control
+- Implement proper role-based access control
+- Store user metadata in the `auth.users` table
+
+## Database
+- Use TypeScript types generated from the database schema
+- Implement proper foreign key constraints
+- Use database functions for complex operations
+- Implement proper indexing for performance
+- Use transactions for operations that require atomicity
+
+## Queries
+- Use prepared statements to prevent SQL injection
+- Implement proper error handling for database queries
+- Use the `.select()` method to limit returned columns
+- Use `.single()` for queries that should return a single row
+- Use `.maybeSingle()` for queries that might return a single row
+
+## Real-time
+- Use Supabase real-time subscriptions for live data
+- Implement proper channel management
+- Use the `.on()` method for specific table changes
+- Implement proper error handling for real-time events
+- Clean up subscriptions when components are unmounted
+
+## Storage
+- Use Supabase Storage for file uploads
+- Implement proper bucket policies
+- Use the `useSupabaseStorage` composable for file operations
+- Implement proper error handling for file operations
+- Use signed URLs for secure file access
+
+## Edge Functions
+- Use Supabase Edge Functions for serverless functions
+- Implement proper error handling for edge functions
+- Use environment variables for configuration
+- Implement proper authentication for edge functions
+- Use TypeScript for edge functions
+
+## Security
+- Never expose API keys in client-side code
+- Use server-side API calls for sensitive operations
+- Implement proper input validation
+- Use RLS policies for data access control
+- Regularly audit database access patterns
+
+## Performance
+- Use pagination for large data sets
+- Implement proper caching strategies
+- Use indexes for frequently queried columns
+- Optimize queries for performance
+- Monitor query performance with Supabase dashboard 
