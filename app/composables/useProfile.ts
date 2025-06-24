@@ -42,7 +42,7 @@ export function useProfile() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('avatar_url, username, full_name, bio, preferences, social_links')
+        .select('avatar_url, username, full_name, bio, preferences, social_links, team_id')
         .eq('user_id', user.value.id)
         .single();
 

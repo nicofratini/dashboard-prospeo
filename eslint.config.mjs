@@ -13,6 +13,7 @@ export default withNuxt(
       'vue/require-default-prop': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      '@stylistic/no-tabs': 'off',
     },
   },
 );

@@ -1,52 +1,65 @@
 <script setup lang=ts>
-// This is sample data.
+const {
+  currentTeam,
+  userTeams,
+  switchTeam,
+} = useTeam();
+
+// Navigation data
 const data = {
-  teams: [
-    {
-      name: 'V Inc',
-      logo: 'mdi:cosine-wave',
-      plan: 'Enterprise',
-    },
-    {
-      name: 'V Corp.',
-      logo: 'mdi:apple-keyboard-command',
-      plan: 'Startup',
-    },
-    {
-      name: 'VS Corp.',
-      logo: 'mdi:card-multiple-outline',
-      plan: 'Free',
-    },
-  ],
   navMain: [
     {
-      title: 'Examples',
-      url: '/dashboard/cards',
-      icon: 'mdi:console',
+      title: 'Dashboard',
+      url: '/dashboard',
+      icon: 'mdi:home',
+
+    },
+    {
+      title: 'Statistics',
+      url: '/dashboard/statistics',
+      icon: 'mdi:trending-up',
+
+    },
+    {
+      title: 'Call History',
+      url: '/dashboard/conversation-history',
+      icon: 'mdi:discussion',
+
+    },
+    {
+      title: 'Calendar',
+      url: '/dashboard/calendar',
+      icon: 'mdi:calendar-month',
+
+    },
+    {
+      title: 'Inbound configuration',
+      url: '#',
+      icon: 'mdi:wrench',
       isActive: true,
       items: [
         {
-          title: 'Cards',
-          url: '/dashboard/cards',
+          title: 'Agents',
+          url: '/dashboard/inbound/agents',
         },
         {
-          title: 'Charts',
-          url: '/dashboard/charts',
+          title: 'Knowledge Base',
+          url: '/dashboard/inbound/knowledge-base',
         },
       ],
     },
     {
-      title: 'Models',
-      url: '/dashboard/chat-ai',
+      title: 'Outbound campaigns',
+      url: '/dashboard/outbound',
       icon: 'mdi:robot',
       items: [
         {
           title: 'Chat',
-          url: '/dashboard/chat-ai',
+          url: '#',
         },
         {
           title: 'Image Gen',
-          url: '/dashboard/image-ai',
+          url: '#',
         },
       ],
     },
@@ -77,37 +90,40 @@ const data = {
       title: 'Settings',
       url: '/dashboard/settings/general',
       icon: 'mdi:cog',
-
-    },
-  ],
-  projects: [
-    {
-      name: 'Design Engineering',
-      url: '#',
-      icon: 'mdi:vector-square',
-    },
-    {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: 'mdi:chart-pie',
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: 'mdi:map',
     },
   ],
 };
 
 const links = useBreadcrumbItems({
   hideRoot: true,
-}).value.slice(1); // todo: fix this
+}).value.slice(1);
 
-const activeTeam = ref(data.teams[0]);
-
-function setActiveTeam(team: typeof data.teams[number]) {
-  activeTeam.value = team;
+async function handleTeamSwitch(teamId: string) {
+  try {
+    await switchTeam(teamId);
+  }
+  catch (error) {
+    console.error('Error switching team:', error);
+  }
 }
+
+// Handle team creation
+async function handleCreateTeam() {
+  // This could open a modal or navigate to team creation page
+  // For now, we'll just log it
+  console.log('Create team clicked');
+}
+
+// Get team display data
+const getTeamIcon = (team: any) => {
+  // You can customize this based on team settings or use a default
+  return team?.avatar_url ? 'mdi:account-group' : 'mdi:office-building';
+};
+
+const getTeamPlan = (team: any) => {
+  // You can get this from team settings or subscription data
+  return team?.settings?.plan || 'Free';
+};
 </script>
 
 <template>
@@ -126,13 +142,13 @@ function setActiveTeam(team: typeof data.teams[number]) {
                     class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
                   >
                     <Icon
-                      :name="activeTeam?.logo || 'mdi:square-rounded-outline'"
+                      :name="getTeamIcon(currentTeam)"
                       class="size-4 shrink-0"
                     />
                   </div>
                   <div class="grid flex-1 text-left text-sm leading-tight">
-                    <span class="truncate font-semibold">{{ activeTeam?.name }}</span>
-                    <span class="truncate text-xs">{{ activeTeam?.plan }}</span>
+                    <span class="truncate font-semibold">{{ currentTeam?.name || 'No Team' }}</span>
+                    <span class="truncate text-xs">{{ getTeamPlan(currentTeam) }}</span>
                   </div>
                   <Icon
                     name="mdi:chevron-up-down"
@@ -149,23 +165,34 @@ function setActiveTeam(team: typeof data.teams[number]) {
                 <DropdownMenuLabel class="text-xs text-muted-foreground">
                   Teams
                 </DropdownMenuLabel>
-                <DropdownMenuItem
-                  v-for="(team, index) in data.teams"
-                  :key="team.name"
-                  class="gap-2 p-2"
-                  @click="setActiveTeam(team)"
+                <template v-if="userTeams.length > 0">
+                  <DropdownMenuItem
+                    v-for="(team, index) in userTeams"
+                    :key="team.id"
+                    class="gap-2 p-2"
+                    @click="handleTeamSwitch(team.id)"
+                  >
+                    <div class="flex size-6 items-center justify-center rounded-sm border">
+                      <Icon
+                        :name="getTeamIcon(team)"
+                        class="size-4 shrink-0"
+                      />
+                    </div>
+                    {{ team.name }}
+                    <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </template>
+                <div
+                  v-else
+                  class="px-2 py-1 text-xs text-muted-foreground"
                 >
-                  <div class="flex size-6 items-center justify-center rounded-sm border">
-                    <Icon
-                      :name="team.logo"
-                      class="size-4 shrink-0"
-                    />
-                  </div>
-                  {{ team.name }}
-                  <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
-                </DropdownMenuItem>
+                  No teams available
+                </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem class="gap-2 p-2">
+                <DropdownMenuItem
+                  class="gap-2 p-2"
+                  @click="handleCreateTeam"
+                >
                   <div class="flex size-6 items-center justify-center rounded-md border bg-background">
                     <Icon
                       name="mdi:plus"
@@ -237,73 +264,6 @@ function setActiveTeam(team: typeof data.teams[number]) {
                 </CollapsibleContent>
               </SidebarMenuItem>
             </Collapsible>
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-          <SidebarGroupLabel>Projects</SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem
-              v-for="item in data.projects"
-              :key="item.name"
-            >
-              <SidebarMenuButton as-child>
-                <NuxtLink :href="item.url">
-                  <Icon
-                    :name="item.icon"
-                    class="size-4 shrink-0"
-                  />
-                  <span>{{ item.name }}</span>
-                </NuxtLink>
-              </SidebarMenuButton>
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child>
-                  <SidebarMenuAction show-on-hover>
-                    <Icon
-                      name="mdi:dots-horizontal"
-                      class="size-4 shrink-0 text-sidebar-foreground/70"
-                    />
-                    <span class="sr-only">More</span>
-                  </SidebarMenuAction>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  class="w-48 rounded-lg"
-                  side="bottom"
-                  align="end"
-                >
-                  <DropdownMenuItem>
-                    <Icon
-                      name="mdi:folder"
-                      class="size-4 shrink-0 text-muted-foreground mr-1"
-                    />
-                    <span>View Project</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Icon
-                      name="mdi:share"
-                      class="size-4 shrink-0 text-muted-foreground  mr-1"
-                    />
-                    <span>Share Project</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Icon
-                      name="mdi:delete"
-                      class="size-4 shrink-0 text-muted-foreground mr-1"
-                    />
-                    <span>Delete Project</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton class="text-sidebar-foreground/70">
-                <Icon
-                  name="mdi:dots-horizontal"
-                  class="size-4 shrink-0 text-sidebar-foreground/70"
-                />
-                <span>More</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

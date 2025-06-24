@@ -1,13 +1,15 @@
 <script setup lang="ts">
 type ButtonVariant = 'link' | 'outline' | 'default' | 'secondary' | 'destructive' | 'ghost';
-const { billing: {
-  billingProvider,
-  allowUnauthenticated,
-  isSubscription,
-  featuredBadgeText,
-  yearSavings,
-  plans,
-} } = useAppConfig();
+const {
+  billing: {
+    billingProvider,
+    allowUnauthenticated,
+    isSubscription,
+    featuredBadgeText,
+    yearSavings,
+    plans,
+  },
+} = useAppConfig();
 const user = useSupabaseUser();
 
 withDefaults(defineProps<{
@@ -98,36 +100,27 @@ const handleButtonClick = async (link: string) => {
         <CardHeader class="pt-2 px-12">
           <CardTitle class="text-3xl flex flex-row items-end">
             <span class="font-semibold">
-              $<NumberTicker
+              <NumberTicker
                 :duration="500"
                 :value="isYearly ? plan.priceYear : plan.priceMonth"
-              />
+              />€
             </span>
             <span
               v-if="isSubscription"
               class="text-sm/6 text-muted-foreground ml-0.5"
-            >/ {{ isYearly ? 'year' : 'month' }}
+            >/ month
             </span>
           </CardTitle>
           <CardDescription>{{ plan.description }}</CardDescription>
         </CardHeader>
         <CardContent class="flex justify-center px-12">
-          <!-- [TIP] A sample of redirecting to the billing provider -->
-          <!--  <Button
+          <Button
+            as-child
             :variant="getButtonVariant(plan.buttonVariant)"
             class="w-full"
             @click="handleButtonClick(isSubscription ? (isYearly ? plan.paymentLink.yearly : plan.paymentLink.monthly) : plan.paymentLink.oneTime)"
           >
             {{ plan.buttonText }}
-          </Button> -->
-
-          <Button
-            as-child
-            class="w-full"
-          >
-            <NuxtLink to="/dashboard">
-              {{ plan.buttonText }}
-            </NuxtLink>
           </Button>
         </CardContent>
         <CardFooter class="px-12">

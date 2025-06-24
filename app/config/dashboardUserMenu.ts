@@ -8,6 +8,12 @@ export const dashboardUserMenuConfig = {
       shortcut: '⇧⌘A',
     },
     {
+      title: 'Team',
+      to: '/dashboard/settings/team',
+      icon: 'mdi:users-group',
+      shortcut: '⇧⌘T',
+    },
+    {
       title: 'Billing',
       to: '/dashboard/settings/billing',
       icon: 'mdi:credit-card',

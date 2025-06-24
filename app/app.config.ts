@@ -6,27 +6,26 @@ import type { SocialLink } from '@/components/marketing/WhoAmI.vue';
 
 export default defineAppConfig({
   general: {
-    contactEmail: 'test@mail.com',
-    name: 'SaaS App',
+    contactEmail: 'contact@info.prospeo.ai',
+    name: 'Prospeo.ai',
   },
   billing: {
-    billingProvider: 'lemonsqueezy',
+    billingProvider: 'stripe',
     allowUnauthenticated: true,
-    customerPortalUrl: '/',
+    customerPortalUrl: 'https://billing.stripe.com/p/login/test_9B628qauifk6aNc5up2Ji00',
     isSubscription: true,
     featuredBadgeText: 'Most popular',
     yearSavings: 25,
     plans: [
       {
-        productId: '383971',
+        productId: 'prod_SW4fmTJtMa7wWh',
         paymentLink: {
-          monthly: '/',
-          yearly: '/',
-          oneTime: '/',
+          monthly: 'https://buy.stripe.com/test_00wfZg0TI8VIf3s9KF2Ji01',
+          yearly: 'https://buy.stripe.com/test_9B628qauifk6aNc5up2Ji00',
         },
-        name: 'Starter',
-        priceMonth: 10,
-        priceYear: 100,
+        name: 'Discovery',
+        priceMonth: 129,
+        priceYear: 99,
         description: 'Get started with basic plan',
         features: [
           'Access to basic components',
@@ -99,17 +98,17 @@ export default defineAppConfig({
   socialLinks: [
     {
       platform: 'x',
-      url: 'https://x.com/stvladyslav',
+      url: 'https://x.com/prospeo.ai',
       icon: 'simple-icons:x',
     },
     {
       platform: 'linkedin',
-      url: 'https://linkedin.com/in/stvladyslav',
+      url: 'https://linkedin.com/in/prospeo.ai',
       icon: 'simple-icons:linkedin',
     },
     {
       platform: 'github',
-      url: 'https://github.com/stvladyslav',
+      url: 'https://github.com/prospeo.ai',
       icon: 'simple-icons:github',
     },
   ] as SocialLink[],

@@ -8,10 +8,10 @@
  * tempalates which can be customized. Or a fully custom component can be created.
  */
 
-defineOgImageComponent('Nuxtbe', {
+defineOgImageComponent('Prospeo', {
   headline: '',
-  title: 'Nuxtbe',
-  description: 'Nuxtbe: The ultimate Nuxt SaaS Starter Kit',
+  title: 'Prospeo.ai',
+  description: 'Prospeo.ai, the intelligent conversational assistant that answers your prospects 24/7, qualifies your leads, and boosts your real estate conversions.',
 });
 
 const { name: siteName } = useSiteConfig();

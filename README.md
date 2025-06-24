@@ -1,12 +1,10 @@
-# Nuxtbe SaaS Starter Kit
+# Prospeo Dashboard
 
-A modern, full-featured starter kit for building SaaS applications with Nuxt 3, TypeScript, and best practices.
+A modern, full-featured SaaS applications built with Nuxt 3, TypeScript, and best practices.
 
 ## ✨ Key Features
 
-Let's explore the comprehensive feature set that **Nuxtbe** provides to accelerate your SaaS development:
-
-The boilerplate comes equipped with an extensive collection of pre-built, production-ready features designed to address common SaaS requirements while maintaining flexibility for customization. Here's an overview of core offerings:
+The project contains an extensive collection of features designed to address common SaaS requirements while maintaining flexibility for customization. Here's an overview of core offerings:
 
 ### Landing page
   - Hero
@@ -27,6 +25,7 @@ The boilerplate comes equipped with an extensive collection of pre-built, produc
   - Card List
   - FAQ
   - Auto Carousel
+
 ### Pricing
 
 Prebuild and ready to use [Pricing](https://demo.nuxtbe.com/pricing) page.<br>

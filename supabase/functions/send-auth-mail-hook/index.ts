@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
     );
 
     const { error } = await resend.emails.send({
-      from: 'Nuxtbe SaaS Starter Kit <noreply@nuxtbe.dev>',
+      from: 'Prospeo.ai <contact@info.prospeo.ai>',
       to: [user.email],
       subject: subject,
       html,

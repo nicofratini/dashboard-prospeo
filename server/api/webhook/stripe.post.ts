@@ -49,7 +49,7 @@ const handleCheckoutSessionCompleted = async (
     /**
          * If the profile does not exist, create a new one. It may be needed when you signed up with one email, but
          * then paid with Google Pay with another email. Or if you decided to allow payment for unregistered users.
-         */
+     */
     if (!profile) {
       ({ data: profile, error } = await client
         .from('profiles')
@@ -112,25 +112,16 @@ const handleCheckoutSessionCompleted = async (
       }
     }
 
-    // [TIP] Uncomment code below to add collaborator to the github repository after purchase.  GITHUB_TOKEN is required.
-
-    /* const { addCollaborator } = githubServerClient(event);
-
-    const isSuccesfullyAdded = await addCollaborator(email);
-
-    if (!isSuccesfullyAdded) {
-      console.error('Failed to add collaborator');
-      return;
-    } */
-
     const { sendEmail } = emailServerClient(event);
 
     const { general: { contactEmail } } = useAppConfig();
 
+    const { name } = useSiteConfig(event);
+
     await sendEmail({
-      from: `Nuxtbe SaaS Starter Kit <${contactEmail}>`,
+      from: `${name} <${contactEmail}>`,
       to: email,
-      subject: 'Welcome to Nuxtbe SaaS Starter Kit - Your Purchase is Complete!',
+      subject: `Welcome to ${name} - Your Purchase is Complete!`,
       html: '<p>Thank you for subscribing! You will be invited to the Git repository shortly.</p>',
     });
 
