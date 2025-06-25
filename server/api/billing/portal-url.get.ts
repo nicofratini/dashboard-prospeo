@@ -56,9 +56,4 @@ export default defineEventHandler(async (event) => {
   return {
     url: session.url,
   };
-
-  throw createError({
-    statusCode: 500,
-    statusMessage: 'Billing provider not found',
-  });
 });

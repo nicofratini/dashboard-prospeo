@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS "public"."team_plans" (
     "ended_at" timestamp with time zone DEFAULT NULL,
     "end_reason" "text",
     "team_id" "uuid" NOT NULL,
+    "inbound_quota" bigint,
     "plan_id" "uuid"
 );
 

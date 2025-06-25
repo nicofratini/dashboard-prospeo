@@ -74,17 +74,14 @@ export default defineNuxtConfig({
     fallback: 'dark',
   },
   runtimeConfig: {
-    sendEmailHookSecret: '',
-    stripeWebhookSecret: '',
-    lemonsqueezyApiKey: '',
-    lemonsqueezyWebhookSecret: '',
-    githubToken: '',
+    sendEmailHookSecret: process.env.SEND_EMAIL_HOOK_SECRET,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
     openaiApiKey: process.env.OPENAI_API_KEY,
     replicateApiKey: process.env.REPLICATE_API_TOKEN,
     mailing: {
-      provider: 'resend', // can be overridden by NUXT_MAILING_PROVIDER
-      resendApiKey: '', // can be overridden by NUXT_MAILING_RESEND_API_KEY
-      resendAudienceId: '', // can be overridden by NUXT_MAILING_RESEND_AUDIENCE_ID
+      provider: 'resend',
+      resendApiKey: process.env.RESEND_API_KEY,
+      resendAudienceId: process.env.RESEND_API_KEY,
     },
     public: {
       baseUrl: process.env.BASE_URL || 'http://localhost:3000',

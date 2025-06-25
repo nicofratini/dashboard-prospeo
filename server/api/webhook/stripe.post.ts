@@ -103,11 +103,23 @@ const handleCheckoutSessionCompleted = async (
       team_id: team.id,
       plan_id: plan.id,
       inbound_quota: plan.inbound_quota,
-      stripe_id: session.customer,
     });
 
     if (planInsertError) {
       console.error(planInsertError);
+      return;
+    }
+
+    const { error: updateProfileError } = await client
+      .from('teams')
+      .update({
+        is_subscribed: true,
+        stripe_id: session.customer,
+      })
+      .eq('id', team.id);
+
+    if (updateProfileError) {
+      console.error(updateProfileError);
       return;
     }
 
@@ -122,18 +134,8 @@ const handleCheckoutSessionCompleted = async (
       from: `${name} <${contactEmail}>`,
       to: email,
       subject: `Welcome to ${name} - Your Purchase is Complete!`,
-      html: '<p>Thank you for subscribing! You will be invited to the Git repository shortly.</p>',
+      html: '<p>Thank you for subscribing!</p>',
     });
-
-    const { error: updateProfileError } = await client
-      .from('teams')
-      .update({ is_subscribed: true })
-      .eq('id', team.id);
-
-    if (updateProfileError) {
-      console.error(updateProfileError);
-      return;
-    }
   }
   catch (err) {
     console.error(err);
@@ -149,12 +151,10 @@ const handleSubscriptionDeleted = async (subscription: Stripe.Subscription, stri
     // Get the Supabase client with service plan
     const client = serverSupabaseServiceRole<Database>(event);
 
-    // const customer = await stripe.customers.retrieve(subscription.customer as string) as Stripe.Response<Stripe.Customer>;
-
     const { data: team, error } = await client
       .from('teams')
       .select('id')
-      .eq('stripe_id', subscription.customer.toString())
+      .eq('stripe_id', subscription.customer as string)
       .single();
 
     if (error) {

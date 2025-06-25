@@ -123,7 +123,7 @@ const handleButtonClick = async (link: string) => {
             v-if="isDirectSubscription"
             :variant="getButtonVariant(plan.buttonVariant)"
             class="w-full"
-            @click="handleButtonClick(isSubscription ? (isYearly ? plan.paymentLink.yearly : plan.paymentLink.monthly) : plan.paymentLink.oneTime)"
+            @click.prevent="handleButtonClick(isSubscription ? (isYearly ? plan.paymentLink.yearly : plan.paymentLink.monthly) : plan.paymentLink.oneTime)"
           >
             {{ plan.buttonText }}
           </Button>

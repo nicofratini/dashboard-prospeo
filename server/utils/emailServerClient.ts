@@ -2,7 +2,7 @@ import { Resend, type CreateEmailOptions } from 'resend';
 import type { H3Event } from 'h3';
 
 export const emailServerClient = (event: H3Event) => {
-  const { resendApiKey } = useRuntimeConfig(event);
+  const { resendApiKey } = useRuntimeConfig(event).mailing;
 
   if (!resendApiKey) {
     console.warn('no resendApiKey given for server service');
@@ -10,7 +10,6 @@ export const emailServerClient = (event: H3Event) => {
   }
 
   const resend = new Resend(resendApiKey);
-
   /**
    * Sends an email using the Resend service
    * @param options Email configuration options
