@@ -95,7 +95,7 @@ definePageMeta({
       <Card>
         <CardHeader class="grid grid-cols-[minmax(0,1fr)_110px] items-start gap-4 space-y-0">
           <div class="space-y-1">
-            <CardTitle>Nuxtbe</CardTitle>
+            <CardTitle>Prospimmo</CardTitle>
             <CardDescription>
               A boilerplate which will help you make your idea alive.
             </CardDescription>

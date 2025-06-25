@@ -12,9 +12,14 @@ const {
 } = useAppConfig();
 const user = useSupabaseUser();
 
+const {
+  currentTeam,
+} = useTeam();
+
 withDefaults(defineProps<{
   title?: string;
   description?: string;
+  isDirectSubscription?: boolean;
 }>(), {
   title: 'Choose the Perfect Plan for Your Needs',
   description: 'Choose from flexible pricing tiers designed to scale with your project, from startups to enterprise solutions.',
@@ -32,13 +37,13 @@ const getButtonVariant = (variant: string | null | undefined): ButtonVariant | n
 
 const handleButtonClick = async (link: string) => {
   if (!user.value) {
-    const redirectUrl = allowUnauthenticated ? link : `/sign-in?redirect=${link}`;
+    const redirectUrl = allowUnauthenticated ? link : `/sign-up?redirect=${link}`;
     return navigateTo(redirectUrl, { external: allowUnauthenticated });
   }
 
   const email = encodeURIComponent(user.value.email as string);
 
-  const redirectUrl = billingProvider === 'stripe' ? `${link}?prefilled_email=${email}` : `${link}?checkout[email]=${email}`;
+  const redirectUrl = billingProvider === 'stripe' ? `${link}?prefilled_email=${email}&client_reference_id=${currentTeam.value.id}` : `${link}?checkout[email]=${email}`;
 
   return navigateTo(redirectUrl, { external: true });
 };
@@ -115,12 +120,21 @@ const handleButtonClick = async (link: string) => {
         </CardHeader>
         <CardContent class="flex justify-center px-12">
           <Button
-            as-child
+            v-if="isDirectSubscription"
             :variant="getButtonVariant(plan.buttonVariant)"
             class="w-full"
             @click="handleButtonClick(isSubscription ? (isYearly ? plan.paymentLink.yearly : plan.paymentLink.monthly) : plan.paymentLink.oneTime)"
           >
             {{ plan.buttonText }}
+          </Button>
+          <Button
+            v-else
+            :variant="getButtonVariant(plan.buttonVariant)"
+            class="w-full"
+          >
+            <NuxtLink to="/dashboard">
+              {{ plan.buttonText }}
+            </NuxtLink>
           </Button>
         </CardContent>
         <CardFooter class="px-12">
@@ -153,77 +167,6 @@ const handleButtonClick = async (link: string) => {
           </div>
         </CardFooter>
       </Card>
-      <!--      <Card class="lg:scale-110 border-2 border-accent-foreground max-w-sm">
-              <div class="absolute inset-x-0 text-center -top-4">
-                <Badge class="hover:bg-primary cursor-default">Most popular</Badge>
-              </div>
-              <div class="mx-12 mt-12 font-bold">Basic</div>
-              <CardHeader class="pt-2 px-12">
-                <CardTitle class="font-bold text-3xl">$30/mo</CardTitle>
-                <CardDescription>Perfect for small teams and businesses</CardDescription>
-              </CardHeader>
-              <CardContent class="flex justify-center px-12">
-                <Button class="w-full">Get Started</Button>
-              </CardContent>
-              <CardFooter class="px-12">
-                <div class="flex flex-col justify-center items-start space-y-2">
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">All components:</span> Access to all advanced components</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">Unlimited projects:</span> Create as many projects as you want</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">Custom domain:</span> Use your own domain name</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">24/7 support:</span> Get help anytime you need it</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">Advanced analytics:</span> Detailed insights and reports</span>
-                  </div>
-                </div>
-              </CardFooter>
-            </Card>
-            <Card class="max-w-sm">
-              <div class="mx-12 mt-12 font-bold">Pro</div>
-              <CardHeader class="pt-2 px-12">
-                <CardTitle class="font-bold text-3xl">$50/mo</CardTitle>
-                <CardDescription>Best for large organizations</CardDescription>
-              </CardHeader>
-              <CardContent class="flex justify-center px-12">
-                <Button variant="outline" class="w-full">Get Started</Button>
-              </CardContent>
-              <CardFooter class="px-12">
-                <div class="flex flex-col justify-center items-start space-y-2">
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">All components:</span> Access to all premium components</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">Unlimited projects:</span> Create as many projects as you want</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">Custom domain:</span> Use your own domain name</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">24/7 support:</span> Get help anytime you need it</span>
-                  </div>
-                  <div class="flex flex-row justify-center items-center space-x-2">
-                    <Icon name="mdi:check" class="text-green-500"/>
-                    <span><span class="font-bold">Advanced analytics:</span> Detailed insights and reports</span>
-                  </div>
-                </div>
-              </CardFooter>
-            </Card> -->
     </div>
   </div>
 </template>

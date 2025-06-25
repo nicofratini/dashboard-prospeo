@@ -56,36 +56,36 @@ const handleSuccessfulOrderCreation = async (order: Order, event: H3Event) => {
 
     const productId = order.data.attributes.first_order_item.product_id;
 
-    // Fetch the role associated with the product ID
-    const { data: role, error: getRoleError } = await client
-      .from('roles')
+    // Fetch the plan associated with the product ID
+    const { data: plan, error: getPlanError } = await client
+      .from('plans')
       .select()
       .eq('product_id', productId.toString())
       .maybeSingle();
 
-    if (getRoleError || !role) {
-      console.error(getRoleError || `Role with productId:${productId}  not found`);
+    if (getPlanError || !plan) {
+      console.error(getPlanError || `Plan with productId:${productId}  not found`);
       return;
     }
 
-    // Check if the user already has a role
-    const { data: profileRole, error: getProfileRoleError } = await client
-      .from('profile_roles')
+    // Check if the user already has a plan
+    const { data: teamPlan, error: getTeamPlanError } = await client
+      .from('team_plans')
       .select()
-      .eq('role_id', role.id)
+      .eq('plan_id', plan.id)
       .eq('profile_id', profile.profile_id)
       .maybeSingle();
 
-    if (getProfileRoleError) {
-      console.error(getProfileRoleError);
+    if (getTeamPlanError) {
+      console.error(getTeamPlanError);
       return;
     }
 
-    if (!profileRole) {
-      // Assign the role to the user
-      const { error } = await client.from('profile_roles').insert({
+    if (!teamPlan) {
+      // Assign the plan to the user
+      const { error } = await client.from('team_plans').insert({
         profile_id: profile.profile_id,
-        role_id: role.id,
+        plan_id: plan.id,
       });
 
       if (error) {
@@ -93,17 +93,6 @@ const handleSuccessfulOrderCreation = async (order: Order, event: H3Event) => {
         return;
       }
     }
-
-    // [TIP] Uncomment code below to add collaborator to the github repository after purchase. GITHUB_TOKEN is required.
-
-    /* const { addCollaborator } = githubServerClient(event);
-
-    const isSuccesfullyAdded = await addCollaborator(email);
-
-    if (!isSuccesfullyAdded) {
-      console.error('Failed to add collaborator');
-      return;
-    } */
 
     const { sendEmail } = emailServerClient(event);
 
@@ -140,7 +129,7 @@ const handleSuccessfulOrderCreation = async (order: Order, event: H3Event) => {
 const handleSubscriptionExpired = async (subscription: Subscription, event: H3Event) => {
   try {
     const email = subscription.data.attributes.user_email;
-    await removeUserRoles(email, event);
+    await removeTeamPlans(email, event);
   }
   catch (err) {
     console.error('Error handling subscription expiration:', err);
@@ -155,7 +144,7 @@ const handleSubscriptionUpdated = async (subscription: Subscription, event: H3Ev
   try {
     const email = subscription.data.attributes.user_email;
     const productId = subscription.data.attributes.product_id;
-    await updateUserRoles(email, productId, event);
+    await updateTeamPlans(email, productId, event);
   }
   catch (err) {
     console.error('Error handling subscription update:', err);

@@ -47,6 +47,8 @@ export function useTeam() {
             name,
             description,
             avatar_url,
+            is_subscribed,
+            stripe_id,
             settings,
             created_at,
             updated_at,

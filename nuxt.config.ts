@@ -64,8 +64,8 @@ export default defineNuxtConfig({
   },
   site: {
     url: process.env.BASE_URL || 'http://localhost:3000',
-    name: 'Nuxtbe - Nuxt SaaS Starter Kit',
-    description: 'Nuxtbe: The Ultimate Starter Kit for building scalable and efficient SaaS applications. Ship fast with comprehensive, customizable, and developer-friendly boilerplate.',
+    name: 'Prospimmo - The ultimate conversational agent for your lead qualification',
+    description: 'Prospimmo - The ultimate conversational agent for your lead qualification',
     defaultLocale: 'en',
   },
   colorMode: {
@@ -87,7 +87,7 @@ export default defineNuxtConfig({
       resendAudienceId: '', // can be overridden by NUXT_MAILING_RESEND_AUDIENCE_ID
     },
     public: {
-      baseUrl: '',
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     },
   },
   build: {

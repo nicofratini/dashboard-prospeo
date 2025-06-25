@@ -13,10 +13,11 @@ export interface Plan {
   priceYear: number;
   description: string;
   features: string[];
-  notAvailableFeatures: string[];
+  notAvailableFeatures?: string[];
   buttonText: string;
   buttonVariant: string;
   isFeatured: boolean;
+  minutesIncluded: number;
 }
 
 export interface Billing {

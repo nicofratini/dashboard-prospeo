@@ -20,25 +20,26 @@ const handleCheckoutSessionCompleted = async (
   event: H3Event,
 ) => {
   try {
-    // Get the Supabase client with service role
     const client = serverSupabaseServiceRole<Database>(event);
 
-    // Retrieve the Stripe checkout session
     const session = await stripe.checkout.sessions.retrieve(id, { expand: ['line_items'] });
 
-    // Get the customer's email from the session
+    const teamId = session?.client_reference_id;
     const email = session?.customer_details?.email;
 
+    if (!teamId) {
+      console.error('Team id not found');
+      return;
+    }
     if (!email) {
       console.error('Email not found');
       return;
     }
 
-    // Fetch the profile from the database
-    let { data: profile, error } = await client
-      .from('profiles')
-      .select('profile_id,email')
-      .eq('email', email)
+    const { data: team, error } = await client
+      .from('teams')
+      .select('*')
+      .eq('id', teamId)
       .maybeSingle();
 
     if (error) {
@@ -46,21 +47,9 @@ const handleCheckoutSessionCompleted = async (
       return;
     }
 
-    /**
-         * If the profile does not exist, create a new one. It may be needed when you signed up with one email, but
-         * then paid with Google Pay with another email. Or if you decided to allow payment for unregistered users.
-     */
-    if (!profile) {
-      ({ data: profile, error } = await client
-        .from('profiles')
-        .upsert({ email })
-        .select('profile_id,email')
-        .single());
-
-      if (error || !profile) {
-        console.error(error || 'Profile was not created');
-        return;
-      }
+    if (!team) {
+      console.error('Team not found for the provided team ID:', teamId);
+      return;
     }
 
     // Get the product ID from the session's line items
@@ -74,42 +63,52 @@ const handleCheckoutSessionCompleted = async (
       return;
     }
 
-    // Fetch the role associated with the product ID
-    const { data: role, error: getRoleError } = await client
-      .from('roles')
+    // Fetch the plan associated with the product ID
+    const { data: plan, error: getPlanError } = await client
+      .from('plans')
       .select()
       .eq('product_id', productId)
       .maybeSingle();
 
-    if (getRoleError || !role) {
-      console.error(getRoleError || `Role with productId:${productId} not found`);
+    if (getPlanError || !plan) {
+      console.error(getPlanError || `Plan with productId:${productId} not found`);
       return;
     }
 
-    // Check if the user already has a role
-    const { data: profileRole, error: getProfileRoleError } = await client
-      .from('profile_roles')
+    // Check if the user already has a plan
+    const { data: teamPlan, error: getTeamPlanError } = await client
+      .from('team_plans')
       .select()
-      .eq('role_id', role.id)
-      .eq('profile_id', profile.profile_id)
+      .eq('plan_id', plan.id)
+      .eq('team_id', team.id)
       .maybeSingle();
 
-    if (getProfileRoleError) {
-      console.error(getProfileRoleError);
+    if (getTeamPlanError) {
+      console.error(getTeamPlanError);
       return;
     }
 
-    if (!profileRole) {
-      // Assign the role to the user
-      const { error } = await client.from('profile_roles').insert({
-        profile_id: profile.profile_id,
-        role_id: role.id,
-      });
+    if (teamPlan) {
+      const { error: updateTeamPlanError } = await client
+        .from('team_plans')
+        .update({ ended_at: new Date().toISOString(), end_reason: 'upgrade' });
 
-      if (error) {
-        console.error(error);
+      if (updateTeamPlanError) {
+        console.error(updateTeamPlanError);
         return;
       }
+    }
+
+    const { error: planInsertError } = await client.from('team_plans').insert({
+      team_id: team.id,
+      plan_id: plan.id,
+      inbound_quota: plan.inbound_quota,
+      stripe_id: session.customer,
+    });
+
+    if (planInsertError) {
+      console.error(planInsertError);
+      return;
     }
 
     const { sendEmail } = emailServerClient(event);
@@ -118,6 +117,7 @@ const handleCheckoutSessionCompleted = async (
 
     const { name } = useSiteConfig(event);
 
+    // TODO Update email regarding our activity
     await sendEmail({
       from: `${name} <${contactEmail}>`,
       to: email,
@@ -126,9 +126,9 @@ const handleCheckoutSessionCompleted = async (
     });
 
     const { error: updateProfileError } = await client
-      .from('profiles')
+      .from('teams')
       .update({ is_subscribed: true })
-      .eq('profile_id', profile.profile_id);
+      .eq('id', team.id);
 
     if (updateProfileError) {
       console.error(updateProfileError);
@@ -146,23 +146,15 @@ const handleCheckoutSessionCompleted = async (
 
 const handleSubscriptionDeleted = async (subscription: Stripe.Subscription, stripe: Stripe, event: H3Event) => {
   try {
-    // Get the Supabase client with service role
+    // Get the Supabase client with service plan
     const client = serverSupabaseServiceRole<Database>(event);
 
-    const customer = await stripe.customers.retrieve(subscription.customer as string) as Stripe.Response<Stripe.Customer>;
+    // const customer = await stripe.customers.retrieve(subscription.customer as string) as Stripe.Response<Stripe.Customer>;
 
-    const email = customer?.email;
-
-    if (!email) {
-      console.error('Email not found');
-      return;
-    }
-
-    // Fetch the profile from the database
-    const { data: profile, error } = await client
-      .from('profiles')
-      .select('profile_id,email')
-      .eq('email', email)
+    const { data: team, error } = await client
+      .from('teams')
+      .select('id')
+      .eq('stripe_id', subscription.customer.toString())
       .single();
 
     if (error) {
@@ -170,21 +162,20 @@ const handleSubscriptionDeleted = async (subscription: Stripe.Subscription, stri
       return;
     }
 
-    // deletes all roles for the user, even if there are multiple
-    const { error: updateProfileRoleError } = await client
-      .from('profile_roles')
-      .delete()
-      .match({ profile_id: profile.profile_id });
+    const { error: updateTeamPlanError } = await client
+      .from('team_plans')
+      .update({ ended_at: new Date().toISOString(), end_reason: 'canceled' })
+      .match({ team_id: team.id, ended_at: null });
 
-    if (updateProfileRoleError) {
-      console.error(updateProfileRoleError);
+    if (updateTeamPlanError) {
+      console.error(updateTeamPlanError);
       return;
     }
 
     const { error: updateProfileError } = await client
-      .from('profiles')
+      .from('teams')
       .update({ is_subscribed: false })
-      .eq('profile_id', profile.profile_id);
+      .eq('id', team.id);
 
     if (updateProfileError) {
       console.error(updateProfileError);
@@ -212,43 +203,61 @@ const handleSubscriptionUpdated = async (subscription: Stripe.Subscription, stri
       return;
     }
 
-    // Fetch the profile from the database
-    const { data: profile, error: profileError } = await client
-      .from('profiles')
-      .select('profile_id,email')
-      .eq('email', email)
+    const { data: team, error: teamError } = await client
+      .from('teams')
+      .select('id')
+      .eq('stripe_id', subscription.customer.toString())
       .single();
 
-    if (profileError) {
-      console.error(profileError);
+    if (teamError) {
+      console.error(teamError);
       return;
     }
 
-    // Fetch the profile role and role associated with the product ID
-    const [{ data: profileRole, error: profileRoleError }, { data: role, error: roleError }] = await Promise.all([
-      client.from('profile_roles').select('role_id').eq('profile_id', profile.profile_id).single(),
-      client.from('roles').select().eq('product_id', productId as string).single(),
+    // Fetch the team plan and plan associated with the product ID
+    const [{ data: teamPlan, error: teamPlanError }, { data: plan, error: planError }] = await Promise.all([
+      client.from('team_plans').select('plan_id').match({ team_id: team.id, ended_at: null }).single(),
+      client.from('plans').select().eq('product_id', productId as string).single(),
     ]);
 
-    if (profileRoleError || roleError) {
-      console.error(profileRoleError || roleError);
+    if (teamPlanError || planError) {
+      console.error(teamPlanError || planError);
       return;
     }
 
-    // Check if the user already has the role assigned
-    if (profileRole.role_id === role.id) {
-      console.log('Role is already assigned');
-      return;
+    if (teamPlan.plan_id === plan.id && subscription.cancel_at_period_end && subscription.cancel_at) {
+      // If plan should be canceled at the end of billing period
+      const { error: teamPlanUpdateError } = await client
+        .from('team_plans')
+        .update({
+          ended_at: new Date(subscription.cancel_at * 1000).toISOString(),
+          end_reason: subscription.cancellation_details?.reason || 'canceled',
+        })
+        .match({ team_id: team.id, ended_at: null });
+      if (teamPlanUpdateError) {
+        console.error(teamPlanUpdateError);
+        return;
+      }
     }
-
-    // Update the profile role
-    const { error: profileRoleUpdateError } = await client
-      .from('profile_roles')
-      .update({ role_id: role.id })
-      .eq('profile_id', profile.profile_id);
-
-    if (profileRoleUpdateError) {
-      console.error(profileRoleUpdateError);
+    else if (teamPlan.plan_id !== plan.id) {
+      // If the plan is different, we need to cancel it and add a new one
+      const { error: teamPlanUpdateError } = await client
+        .from('team_plans')
+        .update({ ended_at: new Date().toISOString(), end_reason: 'upgrade' })
+        .match({ team_id: team.id, ended_at: null });
+      if (teamPlanUpdateError) {
+        console.error(teamPlanUpdateError);
+        return;
+      }
+      const { error: planInsertError } = await client.from('team_plans').insert({
+        team_id: team.id,
+        plan_id: plan.id,
+        inbound_quota: plan.inbound_quota,
+      });
+      if (planInsertError) {
+        console.error(planInsertError);
+        return;
+      }
     }
   }
   catch (err) {

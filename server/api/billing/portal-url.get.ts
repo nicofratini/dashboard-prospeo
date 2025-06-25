@@ -1,6 +1,6 @@
-import { getCustomer } from '@lemonsqueezy/lemonsqueezy.js';
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { Database } from '~~/types/database.types';
+import { useServerStripe } from '#stripe/server';
 
 /**
  * GET /api/billing/portal-url
@@ -23,7 +23,9 @@ export default defineEventHandler(async (event) => {
 
   // Get authenticated user
   const user = await serverSupabaseUser(event);
+  const stripe = await useServerStripe(event);
 
+  const { team_id } = await getQuery(event);
   if (!user) {
     throw createError({
       statusCode: 401,
@@ -31,60 +33,29 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Get profile with payment_user_id
-  const { data: profile, error } = await client
-    .from('profiles')
-    .select('payment_user_id')
-    .eq('user_id', user.id)
+  const { data: team, error } = await client
+    .from('teams')
+    .select('stripe_id')
+    .eq('id', team_id)
     .single();
 
-  if (error || !profile?.payment_user_id) {
+  if (error) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Payment user not found',
+      statusMessage: error || 'Missing stripe_id',
     });
   }
 
-  const { billingProvider, customerPortalUrl } = useAppConfig().billing;
+  const { baseUrl } = useRuntimeConfig().public;
 
-  if (billingProvider === 'lemonsqueezy') {
-    setupServerLemonsqueezy(event);
+  const session = await stripe.billingPortal.sessions.create({
+    customer: team.stripe_id,
+    return_url: `${baseUrl}/dashboard/settings/billing`,
+  });
 
-    try {
-      const { data: customer } = await getCustomer(profile.payment_user_id);
-      const customerPortalUrl = customer?.data?.attributes?.urls?.customer_portal;
-
-      if (!customerPortalUrl) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Customer portal URL not found',
-        });
-      }
-
-      return {
-        url: customerPortalUrl,
-      };
-    }
-    catch (err) {
-      console.error('Error fetching customer portal URL for Lemon Squeezy:', err);
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Failed to get customer portal URL',
-      });
-    }
-  }
-  else if (billingProvider === 'stripe') {
-    if (!customerPortalUrl) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Customer portal URL not found',
-      });
-    }
-
-    return {
-      url: customerPortalUrl,
-    };
-  }
+  return {
+    url: session.url,
+  };
 
   throw createError({
     statusCode: 500,

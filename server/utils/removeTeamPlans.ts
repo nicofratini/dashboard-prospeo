@@ -3,9 +3,9 @@ import { serverSupabaseServiceRole } from '#supabase/server';
 import type { Database } from '~~/types/database.types';
 
 /**
- * This function removes all roles for a user identified by their email and updates their subscription status.
+ * This function removes all plans for a user identified by their email and updates their subscription status.
  *
- * @param {string} email - The email of the user whose roles are to be removed.
+ * @param {string} email - The email of the user whose plans are to be removed.
  * @param {H3Event} event - The event object containing the request context.
  * @throws Will throw an error if the email is not provided or if any database operation fails.
  */
@@ -35,17 +35,17 @@ export default async (email: string, event: H3Event) => {
     });
   }
 
-  // deletes all roles for the user, even if there are multiple
-  const { error: updateProfileRoleError } = await client
-    .from('profile_roles')
+  // deletes all plans for the user, even if there are multiple
+  const { error: updateTeamPlanError } = await client
+    .from('team_plans')
     .delete()
     .match({ profile_id: profile.profile_id });
 
-  if (updateProfileRoleError) {
-    console.error(updateProfileRoleError);
+  if (updateTeamPlanError) {
+    console.error(updateTeamPlanError);
     throw createError({
       statusCode: 500,
-      statusMessage: `Roles for profile ${profile.profile_id} cannot be deleted`,
+      statusMessage: `Plans for profile ${profile.profile_id} cannot be deleted`,
     });
   }
 

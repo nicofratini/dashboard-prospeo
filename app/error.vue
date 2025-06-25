@@ -20,6 +20,7 @@ const errorMessages: Record<number, string> = {
 };
 
 const errorMessage = computed(() => errorMessages[props?.error?.statusCode || 0] || 'An unexpected error occurred');
+console.error(props.error?.message);
 </script>
 
 <template>

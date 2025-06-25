@@ -66,7 +66,7 @@ export type Database = {
           },
         ];
       };
-      roles: {
+      plans: {
         Row: {
           created_at: string;
           description: string | null;
@@ -150,6 +150,8 @@ export type Database = {
           description: string | null;
           id: string;
           name: string;
+          is_subscribed: boolean;
+          stripe_id?: string;
           settings: Json | null;
           updated_at: string;
         };
@@ -160,6 +162,8 @@ export type Database = {
           description?: string | null;
           id?: string;
           name: string;
+          is_subscribed: boolean;
+          stripe_id?: string;
           settings?: Json | null;
           updated_at?: string;
         };
@@ -170,6 +174,8 @@ export type Database = {
           description?: string | null;
           id?: string;
           name?: string;
+          is_subscribed: boolean;
+          stripe_id?: string;
           settings?: Json | null;
           updated_at?: string;
         };
@@ -183,41 +189,50 @@ export type Database = {
           },
         ];
       };
-      user_roles: {
+      team_plans: {
         Row: {
           created_at: string;
+          ended_at?: string;
+          end_reason?: string;
+          inbound_quota?: number;
           id: string;
-          role_id: string;
+          plan_id: string;
           updated_at: string;
           user_id: string;
         };
         Insert: {
           created_at?: string;
+          ended_at?: string;
+          end_reason?: string;
+          inbound_quota?: number;
           id?: string;
-          role_id: string;
+          plan_id: string;
           updated_at?: string;
           user_id: string;
         };
         Update: {
           created_at?: string;
+          ended_at?: string;
+          end_reason?: string;
+          inbound_quota?: number;
           id?: string;
-          role_id?: string;
+          plan_id?: string;
           updated_at?: string;
           user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'user_roles_role_id_fkey';
-            columns: ['role_id'];
+            foreignKeyName: 'team_plans_plan_id_fkey';
+            columns: ['plan_id'];
             isOneToOne: false;
-            referencedRelation: 'roles';
+            referencedRelation: 'plans';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'user_roles_user_id_fkey';
-            columns: ['user_id'];
+            foreignKeyName: 'team_plans_user_id_fkey';
+            columns: ['team_id'];
             isOneToOne: false;
-            referencedRelation: 'users';
+            referencedRelation: 'teams';
             referencedColumns: ['id'];
           },
         ];
